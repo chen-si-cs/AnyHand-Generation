@@ -147,7 +147,7 @@ if __name__ == "__main__":
     wis3d.add_mesh(inverse_mano_verts[0], manolayer.th_faces, name = "inverse mano")
     
     ### Save the mesh to obj file
-    img_path = 
+    img_path = "path/to/hand_texture.png"
     texture_img = Image.open(img_path) 
     save_path = "mano.obj"
     handylayer.to_textured_obj(computed_handy_verts[0], texture_img, save_path)
