@@ -1,0 +1,132 @@
+generate_texture:
+    execute: false
+    n_textures: 10240
+    max_batch_size: 8
+    save_path: "data/texures"
+    max_npz_batch_size: 512       # e.g., 512 per npz file
+    file_prefix: "texture"
+
+generate_mesh:
+    root_dir: "."   # if empty, use current dir
+
+    execute: false   # default to not running generate_mesh
+    num_generate: 4   # Total # of samples to generate 
+    batch_size: 256
+    n_textures: 10240
+    
+    mano_betas_size: 10
+    mano_poses_size: 45
+    beta_std: 0.075
+    pose_std: 2
+
+    use_real_pose: true
+    real_pose_npz_path: "real_poses/freihand_train_poses_betas.npz"
+
+    grasp_xl_mano_dir: "data/GraspXL/mano_dataset_1"
+    # grasp_xl_mano_dir: "data/GraspXL/mano_dataset"
+    grasp_xl_obj_dir: "data/GraspXL/object_dataset"
+    use_textured_objaverse: true
+
+    n_vertices: 7231
+    n_joints: 21
+
+    RGB_width: 448
+    RGB_height: 448
+
+    left_hand: false      # true for left, false for right
+
+    mesh_save_dir: "data/mesh"
+    mesh_temp_dir: "data/temp"
+
+    use_handy_vertices: true
+    file_prefix: "hand"
+
+    # texture_hue_shift: false
+    texture_color_shift: 
+        flag: true
+        percent: 0.5
+    
+    occlude_hand: 
+        flag: false 
+        percent: 0.5
+        max_cover_frac: 0.3
+        size_scale_range: [0.75, 1.25]
+
+    add_arm:
+        flag: true
+        smpl_models_dir: "mano_v1_2/models" # folder that contains SMPLH_*.pkl in smplx layout
+        smpl_gender: "male"
+        smpl2mano_right_path: "./smplx_models/smpl2righthand_verts.npy"
+        uv_template_obj: "./smplx_models/smpl_uv.obj"
+        randomize_arm_pose: true
+        keep_torso: false
+        forearm_only: true
+        smplh_pkl_path: "smplx_models/smplh/SMPLH_male.pkl" 
+        mano_models_dir: "mano_v1_2/models"  # folder that contains MANO_*.pkl in mano layout  
+        # faces_pkl: "./zip_arm.pkl"
+        wrist_jitter_deg: 3.0
+        seam_twist_jitter_deg: 5.0  # roll (twist) 
+
+        realistic_arm_texture:
+            flag: true
+            textures_dir: data/arm_textures   # you said you unzipped here
+            textures_zip: data/SMPLitex-textures.zip      # optional: zip file containing many .png textures (e.g., SMPLitex)
+
+    leave_tmp_files: false   # whether to leave the temporary files (meshes, records.json)
+    save_images_and_meta: false
+    save_verts: false             # save MANO vertices (778, 3) to H5
+
+simulate:
+    execute: false
+
+    max_lights: 5
+    n_images: 2
+    n_frames_per_seq: 1
+    cam_dist_mean: 70
+    cam_dist_std: 0.2
+    cam_loc_std: 0.1
+    intrinsics:
+        near: 0.1
+        far: 2
+        width: 448
+        height: 448
+
+    lowres_hand:
+        flag: false          # set true to enable low-res hand rendering
+        downscale_factor: 2
+
+    edge_soften:
+        flag: true        # enable/disable soft edges at compositing
+        radius_px: 2.0    # Gaussian blur sigma (try 1.0–2.5)
+        shrink_px: 0      # optional: erode mask by N px before blur (reduces halos)
+
+
+    background:
+        # Select one of these two to be empty
+        background_dir: "data/MIT_Indoor_Scenes_Picked"
+        # background_dir: ""
+        # env_map_dir: "data/env_maps"
+        env_map_dir: ""
+
+    lighting:
+        theme_from_bg:
+            flag: true          # set true to enable themed lighting
+            ambient_boost: 1.5  # multiply theme color for ambient; clamp to 1.0
+            key_align_prob: 0.8  # chance one key light is tinted toward theme
+            key_tint_strength: 0.6  # 0=neutral white, 1=full theme color
+            saturation_boost: 1.1   # 1.0–1.3 makes theme color a bit richer
+
+    moge_bg_depth:
+        flag: true
+        model_name: "/moge-2-vitl-normal"
+        align_mode: "dealign"    # "align" | "dealign" | "none"
+        target_gap: 0          # meters; bg farther than hand by ~10 cm if dealign
+        ring_px: 2.0             # boundary ring width for stats
+        fit_scale: false         # enable if you want linear scale + shift fitting
+        keep_hand_depth: true    # also store raw hand-only depth as 'depth_hand_only'
+
+
+visualize:
+    execute: false
+    index: 0
+    output_dir: "data/mesh/visualize"
